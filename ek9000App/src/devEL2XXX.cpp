@@ -35,7 +35,6 @@
 //
 //======================================================//
 static void EL20XX_WriteCallback(CALLBACK* callback);
-static long EL20XX_dev_report(int interest);
 static long EL20XX_init(int after);
 static long EL20XX_init_record(void* precord);
 static long EL20XX_write_record(void* precord);
@@ -48,7 +47,7 @@ struct {
 	DEVSUPFUN get_ioint_info;
 	DEVSUPFUN write_record;
 } devEL20XX = {
-	5,	  (DEVSUPFUN)EL20XX_dev_report,	  (DEVSUPFUN)EL20XX_init, (DEVSUPFUN)EL20XX_init_record,
+	5,	  NULL,	  (DEVSUPFUN)EL20XX_init, (DEVSUPFUN)EL20XX_init_record,
 	NULL, (DEVSUPFUN)EL20XX_write_record,
 };
 
@@ -104,10 +103,6 @@ static void EL20XX_WriteCallback(CALLBACK* callback) {
 		DevError("EL20XX_WriteCallback(): %s\n", devEK9000::ErrorToString(status));
 		return;
 	}
-}
-
-static long EL20XX_dev_report(int) {
-	return 0;
 }
 
 static long EL20XX_init(int) {

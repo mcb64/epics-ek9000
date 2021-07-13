@@ -38,11 +38,9 @@ struct EL40XXDpvt_t {
 	bool compactPDO;
 };
 
-static long EL40XX_dev_report(int after);
 static long EL40XX_init(int after);
 static long EL40XX_init_record(void* record);
 static long EL40XX_write_record(void* record);
-static long EL40XX_linconv(void* precord, int after);
 
 struct {
 	long num;
@@ -53,8 +51,8 @@ struct {
 	DEVSUPFUN write_record;
 	DEVSUPFUN linconv;
 } devEL40XX = {
-	6,	  (DEVSUPFUN)EL40XX_dev_report,	  (DEVSUPFUN)EL40XX_init,	 (DEVSUPFUN)EL40XX_init_record,
-	NULL, (DEVSUPFUN)EL40XX_write_record, (DEVSUPFUN)EL40XX_linconv,
+	6,	  NULL,	  (DEVSUPFUN)EL40XX_init,	 (DEVSUPFUN)EL40XX_init_record,
+	NULL, (DEVSUPFUN)EL40XX_write_record, NULL,
 };
 
 epicsExportAddress(dset, devEL40XX);
@@ -105,10 +103,6 @@ static void EL40XX_WriteCallback(CALLBACK* callback) {
 	}
 }
 
-static long EL40XX_dev_report(int) {
-	return 0;
-}
-
 static long EL40XX_init(int) {
 	return 0;
 }
@@ -155,9 +149,5 @@ static long EL40XX_init_record(void* record) {
 
 static long EL40XX_write_record(void* record) {
 	util::setupCallback(record, EL40XX_WriteCallback);
-	return 0;
-}
-
-static long EL40XX_linconv(void*, int) {
 	return 0;
 }

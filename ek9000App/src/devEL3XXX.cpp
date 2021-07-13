@@ -36,11 +36,9 @@
 //
 //======================================================//
 static void EL30XX_ReadCallback(CALLBACK* callback);
-static long EL30XX_dev_report(int interest);
 static long EL30XX_init(int after);
 static long EL30XX_init_record(void* precord);
 static long EL30XX_read_record(void* precord);
-static long EL30XX_linconv(void* precord, int after);
 
 struct {
 	long number;
@@ -51,8 +49,8 @@ struct {
 	DEVSUPFUN read_record;
 	DEVSUPFUN linconv;
 } devEL30XX = {
-	6,	  (DEVSUPFUN)EL30XX_dev_report,	 (DEVSUPFUN)EL30XX_init,	(DEVSUPFUN)EL30XX_init_record,
-	NULL, (DEVSUPFUN)EL30XX_read_record, (DEVSUPFUN)EL30XX_linconv,
+	6,	  NULL,	 (DEVSUPFUN)EL30XX_init,	(DEVSUPFUN)EL30XX_init_record,
+	NULL, (DEVSUPFUN)EL30XX_read_record, NULL,
 };
 
 epicsExportAddress(dset, devEL30XX);
@@ -148,10 +146,6 @@ static void EL30XX_ReadCallback(CALLBACK* callback) {
 	return;
 }
 
-static long EL30XX_dev_report(int) {
-	return 0;
-}
-
 static long EL30XX_init(int) {
 	return 0;
 }
@@ -202,21 +196,15 @@ static long EL30XX_read_record(void* precord) {
 	return 0;
 }
 
-static long EL30XX_linconv(void*, int) {
-	return 0;
-}
-
 //======================================================//
 //
 //	EL36XX Device support
 //
 //======================================================//
 static void EL36XX_ReadCallback(CALLBACK* callback);
-static long EL36XX_dev_report(int interest);
 static long EL36XX_init(int after);
 static long EL36XX_init_record(void* precord);
 static long EL36XX_read_record(void* precord);
-static long EL36XX_linconv(void* precord, int after);
 
 struct {
 	long number;
@@ -227,8 +215,8 @@ struct {
 	DEVSUPFUN read_record;
 	DEVSUPFUN linconv;
 } devEL36XX = {
-	6,	  (DEVSUPFUN)EL36XX_dev_report,	 (DEVSUPFUN)EL36XX_init,	(DEVSUPFUN)EL36XX_init_record,
-	NULL, (DEVSUPFUN)EL36XX_read_record, (DEVSUPFUN)EL36XX_linconv,
+	6,	  NULL,	 (DEVSUPFUN)EL36XX_init,	(DEVSUPFUN)EL36XX_init_record,
+	NULL, (DEVSUPFUN)EL36XX_read_record, NULL,
 };
 epicsExportAddress(dset, devEL36XX);
 
@@ -301,10 +289,6 @@ static void EL36XX_ReadCallback(CALLBACK* callback) {
 	return;
 }
 
-static long EL36XX_dev_report(int) {
-	return 0;
-}
-
 static long EL36XX_init(int) {
 	return 0;
 }
@@ -352,21 +336,15 @@ static long EL36XX_read_record(void* precord) {
 	return 0;
 }
 
-static long EL36XX_linconv(void*, int) {
-	return 0;
-}
-
 //======================================================//
 //
 //	EL331X Device support
 //
 //======================================================//
 static void EL331X_ReadCallback(CALLBACK* callback);
-static long EL331X_dev_report(int interest);
 static long EL331X_init(int after);
 static long EL331X_init_record(void* precord);
 static long EL331X_read_record(void* precord);
-static long EL331X_linconv(void* precord, int after);
 
 struct {
 	long number;
@@ -377,8 +355,8 @@ struct {
 	DEVSUPFUN read_record;
 	DEVSUPFUN linconv;
 } devEL331X = {
-	6,	  (DEVSUPFUN)EL331X_dev_report,	 (DEVSUPFUN)EL331X_init,	(DEVSUPFUN)EL331X_init_record,
-	NULL, (DEVSUPFUN)EL331X_read_record, (DEVSUPFUN)EL331X_linconv,
+	6,	  NULL,	 (DEVSUPFUN)EL331X_init,	(DEVSUPFUN)EL331X_init_record,
+	NULL, (DEVSUPFUN)EL331X_read_record, NULL,
 };
 epicsExportAddress(dset, devEL331X);
 
@@ -468,9 +446,6 @@ static void EL331X_ReadCallback(CALLBACK* callback) {
 	recGblSetSevr(pRecord, READ_ALARM, NO_ALARM);
 }
 
-static long EL331X_dev_report(int) {
-	return 0;
-}
 
 static long EL331X_init(int) {
 	return 0;
@@ -516,9 +491,5 @@ static long EL331X_init_record(void* precord) {
 
 static long EL331X_read_record(void* precord) {
 	util::setupReadCallback<aiRecord>(precord, EL331X_ReadCallback);
-	return 0;
-}
-
-static long EL331X_linconv(void*, int) {
 	return 0;
 }

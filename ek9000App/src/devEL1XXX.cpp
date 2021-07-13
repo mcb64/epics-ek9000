@@ -37,7 +37,6 @@ struct EL10XXDpvt_t {
 };
 
 static void EL10XX_ReadCallback(CALLBACK* callback);
-static long EL10XX_dev_report(int interest);
 static long EL10XX_init(int after);
 static long EL10XX_init_record(void* precord);
 static long EL10XX_read_record(void* precord);
@@ -50,7 +49,7 @@ struct {
 	DEVSUPFUN get_ioint_info;
 	DEVSUPFUN read_record;
 } devEL10XX = {
-	5,	  (DEVSUPFUN)EL10XX_dev_report,	 (DEVSUPFUN)EL10XX_init, (DEVSUPFUN)EL10XX_init_record,
+	5,	  NULL,	 (DEVSUPFUN)EL10XX_init, (DEVSUPFUN)EL10XX_init_record,
 	NULL, (DEVSUPFUN)EL10XX_read_record,
 };
 
@@ -101,10 +100,6 @@ static void EL10XX_ReadCallback(CALLBACK* callback) {
 	pRecord->rval = buf;
 	pRecord->udf = FALSE;
 	pRecord->pact = FALSE;
-}
-
-static long EL10XX_dev_report(int) {
-	return 0;
 }
 
 static long EL10XX_init(int) {

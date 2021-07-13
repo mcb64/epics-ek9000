@@ -26,7 +26,6 @@ struct EL50XXDpvt_t {
 };
 
 static void el50xx_read_callback(CALLBACK* callback);
-static long el50xx_dev_report(int lvl);
 static long el50xx_init(int after);
 static long el50xx_init_record(void* precord);
 static long el50xx_read_record(void* precord);
@@ -39,7 +38,7 @@ struct {
 	DEVSUPFUN get_ioint_info;
 	DEVSUPFUN read_record;
 } devEL50XX = {
-	5, (DEVSUPFUN)el50xx_dev_report, (DEVSUPFUN)el50xx_init, el50xx_init_record, nullptr, el50xx_read_record,
+	5, nullptr, (DEVSUPFUN)el50xx_init, el50xx_init_record, nullptr, el50xx_read_record,
 };
 
 extern "C"
@@ -96,10 +95,6 @@ static void el50xx_read_callback(CALLBACK* callback) {
 	free(callback);
 }
 
-static long el50xx_dev_report(int) {
-	return 0;
-}
-
 static long el50xx_init(int) {
 	return 0;
 }
@@ -153,7 +148,6 @@ static long el50xx_read_record(void* prec) {
 	return util::setupReadCallback<longinRecord>(precord, el50xx_read_callback);
 }
 
-static long el5042_dev_report(int lvl);
 static long el5042_init_record(void* prec);
 static long el5042_init(int after);
 static long el5042_read_record(void* prec);
@@ -167,7 +161,7 @@ struct {
 	DEVSUPFUN get_ioint_info;
 	DEVSUPFUN read_record;
 } devEL5042 = {
-	5, (DEVSUPFUN)el5042_dev_report, (DEVSUPFUN)el5042_init, el5042_init_record, nullptr, el5042_read_record,
+	5, nullptr, (DEVSUPFUN)el5042_init, el5042_init_record, nullptr, el5042_read_record,
 };
 
 extern "C"
@@ -194,15 +188,6 @@ struct EL5042InputPDO_t {
 	uint32_t position;
 };
 #pragma pack()
-
-/*
--------------------------------------
-Report on all EL5042 devices
--------------------------------------
-*/
-static long el5042_dev_report(int) {
-	return 0;
-}
 
 /*
 -------------------------------------
