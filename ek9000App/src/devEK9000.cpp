@@ -77,10 +77,10 @@ bool g_bDebug = false;
 epicsThreadId g_PollThread = 0;
 epicsMutexId g_ThreadMutex = 0;
 int g_nPollDelay = 250;
-std::list<devEK9000*> g_Devices;
+std::vector<devEK9000*> g_Devices;
 
 /* Global list accessor */
-std::list<devEK9000*>& GlobalDeviceList() {
+std::vector<devEK9000*>& GlobalDeviceList() {
 	return g_Devices;
 }
 
@@ -98,7 +98,7 @@ void Utl_InitThread() {
 void PollThreadFunc(void*) {
 	while (true) {
 		// for (auto device : g_Devices) {
-		for (std::list<devEK9000*>::iterator it = g_Devices.begin(); it != g_Devices.end(); ++it) {
+		for (std::vector<devEK9000*>::iterator it = g_Devices.begin(); it != g_Devices.end(); ++it) {
 			devEK9000* device = *it;
 			int status = device->Lock();
 			/* check connection */
@@ -210,7 +210,7 @@ devEK9000Terminal* devEK9000Terminal::ProcessRecordName(const char* recname, int
 	}
 	else {
 		// for (auto dev : g_Devices) {
-		for (std::list<devEK9000*>::iterator it = g_Devices.begin(); it != g_Devices.end(); ++it) {
+		for (std::vector<devEK9000*>::iterator it = g_Devices.begin(); it != g_Devices.end(); ++it) {
 			devEK9000* dev = *it;
 			for (int i = 0; i < dev->m_numTerms; i++) {
 				if (!dev->m_terms[i].m_recordName)
@@ -289,7 +289,7 @@ devEK9000::~devEK9000() {
 
 devEK9000* devEK9000::FindDevice(const char* name) {
 	// for (auto dev : g_Devices) {
-	for (std::list<devEK9000*>::iterator it = g_Devices.begin(); it != g_Devices.end(); ++it) {
+	for (std::vector<devEK9000*>::iterator it = g_Devices.begin(); it != g_Devices.end(); ++it) {
 		devEK9000* dev = *it;
 		if (!strcmp(name, dev->m_name))
 			return dev;
@@ -970,7 +970,7 @@ void ek9000DisableDebug(const iocshArgBuf*) {
 
 void ek9000List(const iocshArgBuf*) {
 	// for (auto dev : g_Devices) {
-	for (std::list<devEK9000*>::iterator it = g_Devices.begin(); it != g_Devices.end(); ++it) {
+	for (std::vector<devEK9000*>::iterator it = g_Devices.begin(); it != g_Devices.end(); ++it) {
 		devEK9000* dev = *it;
 		epicsPrintf("Device: %s\n\tSlave Count: %i\n", dev->m_name, dev->m_numTerms);
 		epicsPrintf("\tIP: %s\n", dev->m_ip);
@@ -1022,10 +1022,32 @@ void ek9000SetPollTime(const iocshArgBuf* args) {
 }
 
 void ek9kDumpMappings(const iocshArgBuf* args) {
-	
+	for(size_t i = 0; i < g_Devices.size(); i++) {
+		devEK9000* pDevice = g_Devices[i];
+		printf("%s\n", pDevice->m_name);
+
+		for(int j = 0; j < pDevice->m_numTerms; j++) {
+			devEK9000Terminal* pTerm = &pDevice->m_terms[j];
+			printf(" %d\n   Name: %s\n", pTerm->m_terminalId, pTerm->m_recordName);
+			printf("   Terminal type: %s\n", pTerm->m_terminalFamily == TERMINAL_FAMILY_ANALOG ? "Analog" : "Digital");
+			printf("   Input count: %d\n", pTerm->m_inputs);
+			printf("   Input start: 0x%X\n", pTerm->m_inputStart);
+			printf("   Input size: 0x%X\n", pTerm->m_inputSize);
+			printf("   Output count: %d\n", pTerm->m_outputs);
+			printf("   Output start: 0x%X\n", pTerm->m_outputStart);
+			printf("   Output size: 0x%X\n", pTerm->m_outputSize);
+		}
+	}
 }
 
 int ek9000RegisterFunctions() {
+	/* ek9kDumpMappings */
+	{
+		static const iocshFuncDef func = {"ek9kDumpMappings", 0, NULL};
+		iocshRegister(&func, ek9kDumpMappings);
+	}
+
+
 	/* ek9000SetWatchdogTime(ek9k, time[int]) */
 	{
 		static const iocshArg arg1 = {"Name", iocshArgString};
@@ -1159,7 +1181,7 @@ static long ek9000_init(int after) {
 	if (after == 0) {
 		epicsPrintf("Initializing EK9000 Couplers.\n");
 		// for (auto dev : g_Devices) {
-		for (std::list<class devEK9000*>::iterator it = g_Devices.begin(); it != g_Devices.end(); ++it) {
+		for (std::vector<class devEK9000*>::iterator it = g_Devices.begin(); it != g_Devices.end(); ++it) {
 			class devEK9000* dev = (*it);
 			if (!dev->m_init)
 				dev->InitTerminals();
@@ -1426,7 +1448,7 @@ int CoE_ParseString(const char* str, ek9k_coe_param_t* param) {
 
 	/* Finally actually parse the integers, find the ek9k, etc. */
 	// for (auto dev : g_Devices) {
-	for (std::list<class devEK9000*>::iterator it = g_Devices.begin(); it != g_Devices.end(); ++it) {
+	for (std::vector<class devEK9000*>::iterator it = g_Devices.begin(); it != g_Devices.end(); ++it) {
 		class devEK9000* dev = *it;
 		if (strncmp(dev->m_name, buffers[0], strlen(dev->m_name)) == 0) {
 			pcoupler = dev;

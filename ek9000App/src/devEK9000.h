@@ -50,6 +50,7 @@
 #include <string.h>
 #include <functional>
 #include <list>
+#include <vector>
 
 #include "ekUtil.h"
 #include "ekDiag.h"
@@ -83,10 +84,10 @@
 class devEK9000;
 class devEK9000Terminal;
 
-extern std::list<devEK9000*> g_Devices;
+extern std::vector<devEK9000*> g_Devices;
 extern bool g_bDebug;
 
-std::list<devEK9000*>& GlobalDeviceList();
+std::vector<devEK9000*>& GlobalDeviceList();
 
 #define TERMINAL_FAMILY_ANALOG 0x1
 #define TERMINAL_FAMILY_DIGITAL 0x2
@@ -375,7 +376,7 @@ public:
  */
 template <class RecordT> bool devEK9000::setupCommonDpvt(RecordT* prec, TerminalDpvt_t& dpvt) {
 	const char* function = "util::setupCommonDpvt<RecordT>()";
-	std::list<devEK9000*>& devList = GlobalDeviceList();
+	std::vector<devEK9000*>& devList = GlobalDeviceList();
 
 	if (!devEK9000::ParseLinkSpecification(prec->inp.text, LINK_INST_IO, dpvt.linkSpec)) {
 		/* Try to work with legacy stuff */
@@ -390,8 +391,8 @@ template <class RecordT> bool devEK9000::setupCommonDpvt(RecordT* prec, Terminal
 		/* Device name */
 		if (strcmp(param.key, "device") == 0) {
 			bool found = false;
-			std::list<devEK9000*>& devList = GlobalDeviceList();
-			for (std::list<devEK9000*>::iterator x = devList.begin(); x != devList.end(); ++x) {
+			std::vector<devEK9000*>& devList = GlobalDeviceList();
+			for (std::vector<devEK9000*>::iterator x = devList.begin(); x != devList.end(); ++x) {
 				// for (const auto& x : GlobalDeviceList()) {
 				if (strcmp((*x)->m_name, param.value) == 0) {
 					dpvt.pdrv = *x;
