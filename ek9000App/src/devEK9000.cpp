@@ -7,33 +7,6 @@
  * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  */
-//======================================================//
-// Name: devEK9000.c
-// Purpose: Device support for EK9000 and it's associated
-// devices
-// Authors: Jeremy L.
-// Date Created: June 10, 2019
-// TODO:
-//	-	Run this through valgrind/callgrind/cachegrind to find
-//		any leaks or other performance issues
-//	-
-// Notes:
-//	-	Performance could be improved by adding a hashmap
-//		type of structure instead of a simple doubly linked
-//		list (would use less memory too)
-//	-	All device support things are defined and implemented
-//		here
-//	-	For device specific PDOs and such, refer to the docs:
-//		EL1XXX: https://download.beckhoff.com/download/document/io/ethercat-terminals/el10xx_el11xxen.pdf
-//		EL2XXX: https://download.beckhoff.com/download/document/io/ethercat-terminals/EL20xx_EL2124en.pdf
-//		EL3XXX: https://download.beckhoff.com/download/document/io/ethercat-terminals/el30xxen.pdf
-//		EL4XXX: https://download.beckhoff.com/download/document/io/ethercat-terminals/el40xxen.pdf
-// Revisions:
-//	-	July 15, 2019: Improved error propagation and added
-//		new init routines.
-//	-	Feb 7, 2020: Implemented record-based CoE configuration
-//	-	Feb 7, 2020: doCoEIO will now set an errno variable
-//======================================================//
 
 /* EPICS includes */
 #include <epicsExport.h>
