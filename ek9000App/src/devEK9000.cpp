@@ -469,7 +469,7 @@ int devEK9000::VerifyConnection() const {
 
 	pasynManager->freeAsynUser(usr);
 
-	return yn;
+	return 1;
 }
 
 int devEK9000::CoEVerifyConnection(uint16_t termid) {
